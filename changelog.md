@@ -7,6 +7,8 @@
 - Strange increase in infected population towards end of simulation in 
 `pathogen_evolution_recombination_test.jl`
 - Host birth recombinations are broken and use deprecated parameters
+- Floating point error in total rate sum for populations causes error in some simulation runs,
+e.g. `metapopulations.jl`
 
 ### Known performance issues:
 - Garbage collection time is higher than expected for 100k host simulations, suspected type
@@ -47,6 +49,9 @@ and recombination upon birth
 - Interventions
 
 ## Changelog:
+
+## 20 Oct 2026
+Debugging floating point! WIP
 
 ## 4 Jun 2026
 - Changed argument order for immunity sequence functions
