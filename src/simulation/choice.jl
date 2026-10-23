@@ -23,7 +23,8 @@ function randChoose(rand_n::Float64, rates::AbstractVector{Float64}, rates_sum::
             return idx, 0.0
         end
     else
-        return NaN, rand_n
+        # return NaN, rand_n
+        throw(ErrorException("rates_sum equal to zero in randchoose()"))
     end
 end
 

@@ -7,8 +7,6 @@
 - Strange increase in infected population towards end of simulation in 
 `pathogen_evolution_recombination_test.jl`
 - Host birth recombinations are broken and use deprecated parameters
-- Floating point error in total rate sum for populations causes error in some simulation runs,
-e.g. `metapopulations.jl`
 
 ### Known performance issues:
 - Garbage collection time is higher than expected for 100k host simulations, suspected type
@@ -33,6 +31,8 @@ recombinations co-occur do not take into account the fitness of intermediate gen
 may be inaccurate.
 
 ### TODO:
+- Use `population_id` `String` as function argument everywhere needed where 
+we can't use `Population` as an argument
 - Reexamine clearance rate time correction
 - Change transmission event function to add receiver-side bottleneck option
 - Change ancestor search so that you can choose to get only a fraction of ancestors 
@@ -49,6 +49,15 @@ and recombination upon birth
 - Interventions
 
 ## Changelog:
+
+## 22 Oct 2026
+- Fixed floating point error in total rate sum for populations causes error in 
+some simulation runs, e.g. `metapopulations.jl`
+- Added `recalculation_counters` to model to avoid floating point error
+- Changed `randChoose()` zero-sum error handling for function typing, to avoid 
+returning `NaN` and messing up `Int64` type
+- Fixed simple bug in `propagateWeightsOnRemoveHost()` where there was an extra
+`model.`
 
 ## 20 Oct 2026
 Debugging floating point! WIP

@@ -430,21 +430,24 @@ function calculateRate!(evt::Int64, model::Model)
     model.event_rates[evt] = sum([
         model.population_weights[evt, pop_idx] for pop_idx in values(model.population_dict)
     ])
+    model.recalculation_counters[evt] = 0
 end
 
 function calculateWeightReceive!(weight::Int64, model::Model)
     model.population_weights_receive_sums[weight-CHOICE_MODIFIERS[1]+1] = sum([
         model.population_weights_receive[weight-CHOICE_MODIFIERS[1]+1, pop_idx] for pop_idx in values(model.population_dict)
     ])
+    model.recalculation_counters[weight] = 0
 end
 
 # Weight change propagation:
 
 function propagateWeightChanges!(change::Float64, evt::Int64, model::Model)
-    if becomesZero(model.event_rates[evt], change)
+    if becomesZero(model.event_rates[evt], change) || model.recalculation_counters[evt] > RECALCULATION_EVENT_THRESHOLD
         calculateRate!(evt, model)
     else
         model.event_rates[evt] += change
+        model.recalculation_counters[evt] += 1
     end
     model.event_rates_sum = sum(model.event_rates) # this single line is all the "super-model level" calculation code haha
 end
@@ -505,6 +508,7 @@ end
 function propagateWeightReceiveChanges!(change::Float64, population::Population, evt::Int64, model::Model)
     if change != 0.0
         population.recalculation_counters[evt] += 1
+        model.recalculation_counters[evt] += 1
         if population.recalculation_counters[evt] < RECALCULATION_EVENT_THRESHOLD
             if becomesZero(model.population_weights_receive[evt-CHOICE_MODIFIERS[1]+1, model.population_dict[population.id]], change)
                 prev = model.population_weights_receive[evt-CHOICE_MODIFIERS[1]+1, model.population_dict[population.id]]
@@ -513,7 +517,8 @@ function propagateWeightReceiveChanges!(change::Float64, population::Population,
             else
                 model.population_weights_receive[evt-CHOICE_MODIFIERS[1]+1, model.population_dict[population.id]] += change
             end
-            if becomesZero(model.population_weights_receive_sums[evt-CHOICE_MODIFIERS[1]+1], change)
+            if ( becomesZero(model.population_weights_receive_sums[evt-CHOICE_MODIFIERS[1]+1], change)
+                || model.recalculation_counters[evt] > RECALCULATION_EVENT_THRESHOLD )
                 calculateWeightReceive!(evt, model)
             else
                 model.population_weights_receive_sums[evt-CHOICE_MODIFIERS[1]+1] += change
@@ -650,7 +655,7 @@ function propagateWeightsOnRemoveHost!(host_idx::Int, population::Population, mo
     # If population is going to be empty, the population receive transition rate must be set to the base receive transition rate
     if length(population.hosts) == 1
         propagateWeightReceiveChanges!(
-            model.population.parameters.base_coefficients[RECEIVE_TRANSITION], population, RECEIVE_TRANSITION, model
+            population.parameters.base_coefficients[RECEIVE_TRANSITION], population, RECEIVE_TRANSITION, model
         )
     end
 

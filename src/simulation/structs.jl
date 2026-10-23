@@ -202,6 +202,9 @@ mutable struct Model
     event_rates::MVector{NUM_EVENTS,Float64}
     event_rates_sum::Float64
 
+    recalculation_counters::MVector{NUM_SAMPLING_COEFFICIENTS-1,Int64}
+    # counts how many events have happened since last recalculation
+
     time::Float64
 end
 

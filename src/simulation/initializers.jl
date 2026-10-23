@@ -127,6 +127,7 @@ function newModel()
         Vector{Float64}(undef, 0),
         zeros(SVector{NUM_EVENTS,Float64}),
         0.0,
+        zeros(Int64, NUM_SAMPLING_COEFFICIENTS-1),
         0.0,
     )
 end
