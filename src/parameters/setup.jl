@@ -413,21 +413,21 @@ function newPopulationType(
 
     # Other functions
     pathogenFractions::Union{Nothing,Function}=nothing,
-    # Takes Host entity and Population's weightedInteraction function,
+    # Takes Host entity, Population ID, and Population's weightedInteraction function,
     # returns vector with fractional representation of each pathogen present
     weightedInteractionPathogen::Union{Nothing,Function}=nothing,
-    # Takes Pathogen entity, Host entity, and event number;
+    # Takes Pathogen entity, Host entity, Population ID, and event number;
     # returns aggregated response coefficient against that Pathogen for that event
     weightedInteractionResponse::Union{Nothing,Function}=nothing,
-    # Takes Response entity, Host entity, and event number;
+    # Takes Response entity, Host entity, Population ID, and event number;
     # returns aggregated response coefficient of that Response for that event
     weightedInteractionHostwide::Union{Nothing,Function}=nothing,
-    # Takes Host entity and event number;
+    # Takes Host entity, Population ID, and event number;
     # returns aggregated hostwide response coefficient based on all pairwise
     # interactions between Responses and Pathogens for that event
 
     developResponses::Union{Nothing,Function}=nothing,
-    # takes in Pathogen, Host, population's Dict of Responses, population type's dictionary of ResponseTypes, and birth time as arguments, returns Response entities to be added
+    # takes in Pathogen, Host, Population ID,  population's Dict of Responses, population type's dictionary of ResponseTypes, and birth time as arguments, returns Response entities to be added
     # (this handles how many and which responses to choose when adding a response to a host)
 
     response_types::Union{Nothing,Dict{String,ResponseType}}=nothing,

@@ -19,7 +19,7 @@ end
 
 function newResponse!(
     imprinted_pathogen::Union{Pathogen,Nothing}, matured_pathogen::Union{Pathogen,Nothing}, host_sequence::String,
-    existing_responses::Dict{Tuple{String,String,String,String},Response}, type::ResponseType;
+    existing_responses::Dict{Tuple{String,String,String,String},Response}, population_id::String, type::ResponseType;
     parents::MVector{2,Union{Response,Nothing}}=MVector{2,Union{Response,Nothing}}([nothing, nothing]),
     birth_time::Float64=0.0)
     isnothing(imprinted_pathogen) ? imprinted_seq = "" : imprinted_seq = imprinted_pathogen.sequence
@@ -27,8 +27,8 @@ function newResponse!(
 
     existing_responses[(imprinted_seq, matured_seq, host_sequence, type.id)] = Response(
         parents, birth_time, host_sequence, imprinted_pathogen, matured_pathogen,
-        responseStaticSpecificCoefficients(imprinted_seq, matured_seq, host_sequence, population.id, type),
-        responseStaticHostwideCoefficients(imprinted_seq, matured_seq, host_sequence, population.id, type),
+        responseStaticSpecificCoefficients(imprinted_seq, matured_seq, host_sequence, population_id, type),
+        responseStaticHostwideCoefficients(imprinted_seq, matured_seq, host_sequence, population_id, type),
         type
     )
 

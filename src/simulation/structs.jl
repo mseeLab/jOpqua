@@ -115,21 +115,21 @@ struct PopulationType
 
     base_coefficients::SVector{NUM_COEFFICIENTS,Float64}
 
-    pathogenFractions::FunctionWrapper{Vector{Float64},Tuple{Host,FunctionWrapper{Float64,Tuple{Pathogen,Host,Int64}}}}
+    pathogenFractions::FunctionWrapper{Vector{Float64},Tuple{Host,String,FunctionWrapper{Float64,Tuple{Pathogen,Host,String,Int64}}}}
     # Takes Host entity and Population's weightedInteraction function,
     # returns vector with fractional representation of each pathogen present
-    weightedInteractionPathogen::FunctionWrapper{Float64,Tuple{Pathogen,Host,Int64}}
+    weightedInteractionPathogen::FunctionWrapper{Float64,Tuple{Pathogen,Host,String,Int64}}
     # Takes Pathogen entity, Host entity, and event number;
     # returns aggregated response coefficient against that Pathogen for that event
-    weightedInteractionResponse::FunctionWrapper{Float64,Tuple{Response,Host,Int64}}
+    weightedInteractionResponse::FunctionWrapper{Float64,Tuple{Response,Host,String,Int64}}
     # Takes Response entity, Host entity, and event number;
     # returns aggregated response coefficient of that Response for that event
-    weightedInteractionHostwide::FunctionWrapper{Float64,Tuple{Host,Int64}}
+    weightedInteractionHostwide::FunctionWrapper{Float64,Tuple{Host,String,Int64}}
     # Takes Host entity and event number;
     # returns aggregated hostwide response coefficient based on all pairwise
     # interactions between Responses and Pathogens for that event
 
-    developResponses::FunctionWrapper{Vector{Response},Tuple{Pathogen,Host,Dict{Tuple{String,String,String,String},Response},Dict{String,ResponseType},Float64}}
+    developResponses::FunctionWrapper{Vector{Response},Tuple{Pathogen,Host,String,Dict{Tuple{String,String,String,String},Response},Dict{String,ResponseType},Float64}}
     # takes in Pathogen, Host, population's Dict of Responses, population type's dictionary of ResponseTypes, and birth time as arguments, returns Response entities to be added
     # (this handles how many and which responses to choose when adding a response to a host)
     # The list of Responses is the Population level vector of Responses,

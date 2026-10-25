@@ -440,6 +440,7 @@ function acquireResponse!(pathogen_idx::Int64, host_idx::Int64, pop_idx::Int64, 
     responses = model.populations[pop_idx].parameters.developResponses(
         model.populations[pop_idx].hosts[host_idx].pathogens[pathogen_idx],
         model.populations[pop_idx].hosts[host_idx],
+        model.populations[pop_idx].id,
         model.populations[pop_idx].responses,
         model.populations[pop_idx].parameters.response_types,
         model.time

@@ -27,51 +27,51 @@ function responseStaticHostwideCoefficients(
     ]
 end
 
-function responseStaticSpecificCoefficient(response::Response, host::Host, population::Population, coefficient::Int64)
+function responseStaticSpecificCoefficient(response::Response, host::Host, population_id::String, coefficient::Int64)
     return response.type.static_specific_coefficient_functions[coefficient](
         isnothing(response.imprinted_pathogen) ? "" : response.imprinted_pathogen.sequence,
         isnothing(response.matured_pathogen) ? "" : response.matured_pathogen.sequence,
         host.sequence,
-        population.id
+        population_id
     )
 end
 
-function responseInteractionSpecificCoefficient(pathogen::Pathogen, response::Response, host::Host, population::Population, coefficient::Int64)
+function responseInteractionSpecificCoefficient(pathogen::Pathogen, response::Response, host::Host, population_id::String, coefficient::Int64)
     return response.type.interaction_specific_coefficient_functions[coefficient](
         pathogen.sequence,
         isnothing(response.imprinted_pathogen) ? "" : response.imprinted_pathogen.sequence,
         isnothing(response.matured_pathogen) ? "" : response.matured_pathogen.sequence,
         host.sequence,
-        population.id
+        population_id
     )
 end
 
-function responseStaticHostwideCoefficient(response::Response, host::Host, population::Population, coefficient::Int64)
+function responseStaticHostwideCoefficient(response::Response, host::Host, population_id::String, coefficient::Int64)
     return response.type.static_hostwide_coefficient_functions[coefficient](
         isnothing(response.imprinted_pathogen) ? "" : response.imprinted_pathogen.sequence,
         isnothing(response.matured_pathogen) ? "" : response.matured_pathogen.sequence,
         host.sequence,
-        population.id
+        population_id
     )
 end
 
-function responseInteractionHostwideCoefficient(pathogen::Pathogen, response::Response, host::Host, population::Population, coefficient::Int64)
+function responseInteractionHostwideCoefficient(pathogen::Pathogen, response::Response, host::Host, population_id::String, coefficient::Int64)
     return response.type.interaction_hostwide_coefficient_functions[coefficient](
         pathogen.sequence,
         isnothing(response.imprinted_pathogen) ? "" : response.imprinted_pathogen.sequence,
         isnothing(response.matured_pathogen) ? "" : response.matured_pathogen.sequence,
         host.sequence,
-        population.id
+        population_id
     )
 end
 
-function reactivityCoefficient(pathogen::Pathogen, response::Response, host::Host, population::Population)
+function reactivityCoefficient(pathogen::Pathogen, response::Response, host::Host, population_id::String)
     return response.type.reactivityCoefficient(
         pathogen.sequence,
         isnothing(response.imprinted_pathogen) ? "" : response.imprinted_pathogen.sequence,
         isnothing(response.matured_pathogen) ? "" : response.matured_pathogen.sequence,
         host.sequence,
-        population.id
+        population_id
     )
 end
 
@@ -81,13 +81,13 @@ end
 
 function nonsamplingValue(coef::Int64, pathogen::Pathogen, host::Host, population::Population)
     return pathogen.specific_coefficients[coef] * population.parameters.weightedInteractionPathogen(
-               pathogen, host, coef
+               pathogen, host, population.id, coef
            ) * host.coefficients[coef] * hostwideNetCoefficient(host, population, coef) * population.parameters.base_coefficients[coef]
 end
 
 function nonsamplingValue(coef::Int64, response::Response, host::Host, population::Population)
     return response.specific_coefficients[coef] * population.parameters.weightedInteractionResponse(
-               response, host, coef
+               response, host, population.id, coef
            ) * host.coefficients[coef] * hostwideNetCoefficient(host, population, coef) * population.parameters.base_coefficients[coef]
 end
 
@@ -126,7 +126,7 @@ function hostwideNetCoefficient(host::Host, population::Population, coef::Int64)
         net_hostwide_coefficient = net_hostwide_coefficient * host.responses[re].hostwide_coefficients[coef]
     end
 
-    return net_hostwide_coefficient * population.parameters.weightedInteractionHostwide(host, coef) * host.coefficients[coef]
+    return net_hostwide_coefficient * population.parameters.weightedInteractionHostwide(host, population.id, coef) * host.coefficients[coef]
 end
 
 function pathogenWeights!(p::Int64, host::Host, population::Population, evt::Int64)
@@ -134,7 +134,7 @@ function pathogenWeights!(p::Int64, host::Host, population::Population, evt::Int
     if length(host.responses) > 0
         host.pathogen_weights[evt, p] =
             host.pathogen_weights[evt, p] * population.parameters.weightedInteractionPathogen(
-                host.pathogens[p], host, evt
+                host.pathogens[p], host, population.id, evt
             )
     end
     if evt in PATHOGEN_NONSAMPLING_COEFFICIENTS
@@ -215,7 +215,7 @@ end
 
 function responseWeights!(re::Int64, host::Host, population::Population, evt::Int64)
     host.response_weights[evt-RESPONSE_EVENTS[1]+1, re] = host.responses[re].specific_coefficients[evt] * population.parameters.weightedInteractionResponse(
-        host.responses[re], host, evt
+        host.responses[re], host, population.id, evt
     )
     # No Response fraction weighting here, just presence of Response is enough
 end
@@ -265,7 +265,7 @@ end
 
 function hostWeights!(host_idx::Int64, population::Population, model::Model)
     population.hosts[host_idx].pathogen_fractions = population.parameters.pathogenFractions(
-        population.hosts[host_idx], population.parameters.weightedInteractionPathogen
+        population.hosts[host_idx], population.id, population.parameters.weightedInteractionPathogen
     )
     prev = 0.0
     for weight in PATHOGEN_EVENTS

@@ -31,8 +31,7 @@ recombinations co-occur do not take into account the fitness of intermediate gen
 may be inaccurate.
 
 ### TODO:
-- Use `population_id` `String` as function argument everywhere needed where 
-we can't use `Population` as an argument
+- Fix `nothing` type handling of parents in `ancestors()` and in `birth()` 
 - Reexamine clearance rate time correction
 - Change transmission event function to add receiver-side bottleneck option
 - Change ancestor search so that you can choose to get only a fraction of ancestors 
@@ -49,6 +48,12 @@ and recombination upon birth
 - Interventions
 
 ## Changelog:
+
+## 25 Oct 2026
+- Fixed `pathogenFractions`, `weightedInteraction`, and `developResponse` 
+related functions to use `population_id` `String` as function argument 
+everywhere needed since we can't use `Population` as an argument 
+because of circular definition in `struct.jl`
 
 ## 22 Oct 2026
 - Fixed floating point error in total rate sum for populations causes error in 

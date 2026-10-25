@@ -24,15 +24,15 @@ function run(seed::Int64, t_vec::Vector{Float64})
         "pat_type",
         num_loci=genome_length,
         possible_alleles="AB",
-        contactSpecificCoefficient=s::String -> 1.0 + (0.1 * (genome_length - hamming(s, optimal_genome)) / genome_length),
-        receiveContactHostwideCoefficient=s::String -> 0.0, # makes infected hosts immune to superinfection
+        contactSpecificCoefficient=(s::String,pop_id::String) -> 1.0 + (0.1 * (genome_length - hamming(s, optimal_genome)) / genome_length),
+        receiveContactHostwideCoefficient=(s::String,pop_id::String) -> 0.0, # makes infected hosts immune to superinfection
     )
 
     res_type = jOpqua.newResponseType(
         "res_type",
-        reactivityCoefficient=(hos_g::String, imp_g::String, mat_g::String, pat_g::String) -> imp_g == pat_g ? 1.0 : 0.0,
+        reactivityCoefficient=(hos_g::String, imp_g::String, mat_g::String, pat_g::String, pop_id::String) -> imp_g == pat_g ? 1.0 : 0.0,
         # transmissionEfficiencyInteractionSpecificCoefficient=(hos_g::String, imp_g::String, mat_g::String, pat_g::String) -> imp_g == pat_g ? 0.0 : 1.0,
-        clearanceInteractionSpecificCoefficient=(hos_g::String, imp_g::String, mat_g::String, pat_g::String) -> imp_g == pat_g ? 1.1e0 : 1.0,
+        clearanceInteractionSpecificCoefficient=(hos_g::String, imp_g::String, mat_g::String, pat_g::String, pop_id::String) -> imp_g == pat_g ? 1.1e0 : 1.0,
         # responseAcquisitionInteractionSpecificCoefficient=(hos_g::String, imp_g::String, mat_g::String, pat_g::String) -> imp_g == pat_g ? 0.0 : 1.0,
     )
 
@@ -53,12 +53,12 @@ function run(seed::Int64, t_vec::Vector{Float64})
         pathogenFractions=jOpqua.pathogenFractionsProportionalFitness,
         response_types=Dict{String,jOpqua.ResponseType}([(res_type.id => res_type)]),
         developResponses=(
-            pathogen::jOpqua.Pathogen, host::jOpqua.Host,
+            pathogen::jOpqua.Pathogen, host::jOpqua.Host, pop_id::String,
             existing_responses::Dict{Tuple{String,String,String,String},jOpqua.Response},
             response_types::Dict{String,jOpqua.ResponseType},
             birth_time::Float64
         ) -> [jOpqua.deNovoResponse(
-            pathogen, host, existing_responses, response_types, birth_time;
+            pathogen, host, "pop_type", existing_responses, response_types, birth_time;
             response_type_id="res_type"
         )],
     )

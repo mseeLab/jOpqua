@@ -156,12 +156,12 @@ const DEFAULT_POPULATION_TYPE = PopulationType(
     weightedInteractionResponseWinnerTakesAll,
     weightedInteractionHostwideProduct,
     (
-        pathogen::Pathogen, host::Host,
+        pathogen::Pathogen, host::Host, population_id::String,
         existing_responses::Dict{Tuple{String,String,String,String},Response},
         response_types::Dict{String,ResponseType},
         birth_time::Float64
     ) -> [deNovoResponse(
-        pathogen, host, existing_responses, response_types, birth_time
+        pathogen, host, population_id, existing_responses, response_types, birth_time
     )],
     Dict{String,ResponseType}([(DEFAULT_RESPONSE_TYPE.id => DEFAULT_RESPONSE_TYPE)])
 )
