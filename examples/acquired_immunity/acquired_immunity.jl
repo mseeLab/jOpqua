@@ -30,10 +30,10 @@ function run(seed::Int64, t_vec::Vector{Float64})
 
     res_type = jOpqua.newResponseType(
         "res_type",
-        reactivityCoefficient=(hos_g::String, imp_g::String, mat_g::String, pat_g::String, pop_id::String) -> imp_g == pat_g ? 1.0 : 0.0,
-        # transmissionEfficiencyInteractionSpecificCoefficient=(hos_g::String, imp_g::String, mat_g::String, pat_g::String) -> imp_g == pat_g ? 0.0 : 1.0,
-        clearanceInteractionSpecificCoefficient=(hos_g::String, imp_g::String, mat_g::String, pat_g::String, pop_id::String) -> imp_g == pat_g ? 1.1e0 : 1.0,
-        # responseAcquisitionInteractionSpecificCoefficient=(hos_g::String, imp_g::String, mat_g::String, pat_g::String) -> imp_g == pat_g ? 0.0 : 1.0,
+        reactivityCoefficient=(pat_g::String, imp_g::String, mat_g::String, hos_g::String, pop_id::String) -> imp_g == pat_g ? 1.0 : 0.0,
+        # transmissionEfficiencyInteractionSpecificCoefficient=(pat_g::String, imp_g::String, mat_g::String, hos_g::String) -> imp_g == pat_g ? 0.0 : 1.0,
+        clearanceInteractionSpecificCoefficient=(pat_g::String, imp_g::String, mat_g::String, hos_g::String, pop_id::String) -> imp_g == pat_g ? 1.1e0 : 1.0,
+        # responseAcquisitionInteractionSpecificCoefficient=(pat_g::String, imp_g::String, mat_g::String, hos_g::String) -> imp_g == pat_g ? 0.0 : 1.0,
     )
 
     hos_type = jOpqua.newHostType("hos_type")

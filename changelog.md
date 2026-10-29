@@ -49,6 +49,9 @@ and recombination upon birth
 
 ## Changelog:
 
+## 27 Oct 2026
+Changed order of parameters in `acquired_immunity.jl`, pointed out by Sucheta G.
+
 ## 25 Oct 2026
 - Fixed `pathogenFractions`, `weightedInteraction`, and `developResponse` 
 related functions to use `population_id` `String` as function argument 
