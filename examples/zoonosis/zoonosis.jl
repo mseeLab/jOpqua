@@ -21,7 +21,33 @@ function run(seed::Int64, t_vec::Vector{Float64})
 
     function cliffLandscape(s::String,pop_id::String)
         if pop_id == "human"
-            f = 0.5
+            f = 0.85
+            if s == "BBBBB"
+                f = 2.0
+            end
+        else
+            f = 1.0
+        end
+        return f
+    end
+
+    function hillLandscape(s::String,pop_id::String)
+        if pop_id == "human"
+            f = 0.85
+            f += 0.1 * count(==('B'), s)
+            if s == "BBBBB"
+                f = 2.0
+            end
+        else
+            f = 1.0
+        end
+        return f
+    end
+
+    function valleyLandscape(s::String,pop_id::String)
+        if pop_id == "human"
+            f = 0.85
+            f -= 0.1 * count(==('B'), s)
             if s == "BBBBB"
                 f = 2.0
             end
@@ -36,7 +62,7 @@ function run(seed::Int64, t_vec::Vector{Float64})
         num_loci=5,
         possible_alleles="AB",
         receiveContactHostwideCoefficient=(s::String,pop_id::String) -> 0.0,
-        transmissionEfficiencySpecificCoefficient=cliffLandscape,
+        transmissionEfficiencySpecificCoefficient=hillLandscape,
     )
 
 
